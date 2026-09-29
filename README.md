@@ -33,7 +33,7 @@ Sistem ini membedakan interaksi pengguna berdasarkan dua level otorisasi:
 1. _Clone_ repositori ini ke komputer Anda:
 
    ```bash
-   git clone [https://github.com/username-kamu/tugas-crud-karyawan.git](https://github.com/username-kamu/tugas-crud-karyawan.git)
+   git clone [https://github.com/aliefibnu/sistem-manajemen-karyawan-sederhana.git](https://github.com/aliefibnu/sistem-manajemen-karyawan-sederhana.git)
    ```
 
 2. Impor struktur _database_ yang terdapat pada folder `database/` ke manajemen _database_ lokal Anda.
