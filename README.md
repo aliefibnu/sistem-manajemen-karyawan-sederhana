@@ -1,59 +1,52 @@
-# SistemManajemenKaryawanSederhana
+# Sistem Manajemen Karyawan Sederhana (SMKS) 👥
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.7.
+Proyek ini adalah aplikasi berbasis web sederhana yang dikembangkan secara eksklusif untuk memenuhi tugas sekolah (studi kasus operasional kantor). Aplikasi ini berfokus pada penerapan operasi CRUD dasar melalui dua modul utama: pengelolaan pengajuan cuti/izin dan perhitungan rekapitulasi gaji harian karyawan.
 
-## Development server
+## 📌 Hak Akses (Role)
 
-To start a local development server, run:
+Sistem ini membedakan interaksi pengguna berdasarkan dua level otorisasi:
 
-```bash
-ng serve
-```
+1. **Karyawan**: Dapat mengajukan permohonan cuti/izin dan melihat rincian pemotongan gaji milik sendiri.
+2. **HRD (Admin)**: Dapat memvalidasi (menyetujui/menolak) pengajuan cuti dan melakukan penyesuaian komponen gaji seluruh karyawan.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## ⚙️ Fitur & Logika Bisnis (Sesuai Syarat Tugas)
 
-## Code scaffolding
+### 1. Modul Kehadiran & Cuti
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Pengajuan Cuti**: Karyawan dapat mengisi form tanggal mulai dan tanggal selesai untuk pengajuan izin atau cuti.
+- **Perhitungan Hari Kerja Saja**: Sistem dirancang untuk menghitung total hari cuti dengan mengabaikan hari libur akhir pekan (Sabtu & Minggu). Pemotongan gaji hanya akan dikenakan pada hari kerja aktif (Senin - Jumat).
+- **Validasi Syarat Dokumen**: Apabila total kalkulasi hari kerja yang diajukan lebih dari 3 hari, sistem akan mewajibkan karyawan melampirkan file dokumen "Surat Pernyataan Bertanggung Jawab".
+- **Persetujuan HRD**: HRD memiliki akses untuk mengubah status pengajuan menjadi "Disetujui" atau "Ditolak", serta menambahkan catatan khusus pada form tersebut.
 
-```bash
-ng generate component component-name
-```
+### 2. Modul Rekapitulasi Gaji
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- **Basis Gaji Harian**: Gaji pokok karyawan dihitung dengan tarif harian tetap (Rp 227.272 / hari kerja).
+- **Pemotongan Otomatis**: Total gaji kotor bulanan akan otomatis dipotong berdasarkan akumulasi hari cuti aktif yang telah disetujui oleh HRD.
+- **Penyesuaian Manual (Khusus HRD)**: Sebelum finalisasi gaji, form CRUD memberikan fleksibilitas kepada HRD untuk:
+  - Memodifikasi nominal gaji harian.
+  - Menambahkan/mengurangi persentase tertentu.
+  - Memasukkan nilai nominal khusus sebagai bonus atau potongan tambahan.
+- **Tampilan Karyawan**: Karyawan hanya memiliki akses _Read-Only_ untuk melihat laporan akhir dari gaji mereka sendiri (privasi data antar karyawan terjaga).
 
-```bash
-ng generate --help
-```
+## 🚀 Panduan Instalasi Lokal
 
-## Building
+1. _Clone_ repositori ini ke komputer Anda:
 
-To build the project run:
+   ```bash
+   git clone [https://github.com/username-kamu/tugas-crud-karyawan.git](https://github.com/username-kamu/tugas-crud-karyawan.git)
+   ```
 
-```bash
-ng build
-```
+2. Impor struktur _database_ yang terdapat pada folder `database/` ke manajemen _database_ lokal Anda.
+3. Sesuaikan koneksi _database_ pada file konfigurasi proyek.
+4. Akses aplikasi melalui _localhost_ di _browser_ Anda.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🔐 Akun Pengujian
 
-## Running unit tests
+Gunakan data berikut untuk menguji _form login_:
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+- **HRD**: `hrd@kantor.local` | Password: `admin`
+- **Karyawan**: `karyawan@kantor.local` | Password: `user123`
 
-```bash
-ng test
-```
+---
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+_Disclaimer: Proyek ini dibuat sepenuhnya sebagai tugas akademik untuk simulasi logika pemrograman tingkat sekolah. Tidak ada data perusahaan asli yang digunakan di dalam sistem ini._
