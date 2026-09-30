@@ -1,4 +1,230 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+@plugin '@openng/optimus-ui-tailwindcss';
 @import '@openng/icons/openng-icons.css';
+
+@custom-variant dark (&:where([class*="app-dark"], [class*="app-dark"] *));
+
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1920px;
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+:root {
+  --primary-color: var(--p-primary-color);
+  --primary-contrast-color: var(--p-primary-contrast-color);
+  --text-color: var(--p-text-color);
+  --text-color-secondary: var(--p-text-muted-color);
+  --surface-border: var(--p-content-border-color);
+  --surface-card: var(--p-content-background);
+  --surface-hover: var(--p-content-hover-background);
+  --surface-overlay: var(--p-overlay-popover-background);
+  --transition-duration: var(--p-transition-duration, 0.2s);
+  --maskbg: var(--p-mask-background);
+  --content-border-radius: var(--p-content-border-radius, 6px);
+  --layout-section-transition-duration: 0.2s;
+  --element-transition-duration: var(--p-transition-duration, 0.2s);
+  --surface-ground: var(--p-surface-100);
+}
+
+:root[class*='app-dark'],
+.app-dark {
+  --surface-ground: var(--p-surface-950);
+}
+
+html {
+  height: 100%;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-color);
+  background-color: var(--surface-ground);
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Layout Topbar Styling */
+.layout-topbar {
+  position: fixed;
+  height: 4rem;
+  z-index: 997;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding: 0 1.5rem;
+  background-color: var(--surface-card);
+  border-bottom: 1px solid var(--surface-border);
+  transition: left var(--layout-section-transition-duration, 0.2s);
+  display: flex;
+  align-items: center;
+}
+
+.layout-topbar-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 22rem;
+}
+
+.layout-topbar-logo {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.15rem;
+  border-radius: var(--content-border-radius, 6px);
+  color: var(--text-color);
+  font-weight: 600;
+  gap: 0.5rem;
+  text-decoration: none;
+
+  svg {
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+  }
+}
+
+.layout-topbar-action {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--text-color);
+  transition:
+    background-color var(--element-transition-duration, 0.2s),
+    color var(--element-transition-duration, 0.2s);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+
+  &:hover {
+    background-color: var(--surface-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  i {
+    font-size: 1.25rem;
+  }
+
+  span {
+    font-size: 0.875rem;
+    display: none;
+  }
+
+  &.layout-topbar-action-highlight {
+    background-color: var(--primary-color);
+    color: var(--primary-contrast-color);
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
+
+.layout-menu-button {
+  margin-right: 0.25rem;
+}
+
+.layout-topbar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.layout-config-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.layout-topbar-menu-button {
+  display: none;
+}
+
+.layout-topbar-menu-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (max-width: 991px) {
+  .layout-topbar {
+    padding: 0 1rem;
+
+    .layout-topbar-logo-container {
+      width: auto;
+    }
+
+    .layout-topbar-menu-button {
+      display: inline-flex;
+    }
+
+    .layout-topbar-menu {
+      position: absolute;
+      background-color: var(--surface-overlay);
+      transform-origin: top;
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+      border-radius: var(--content-border-radius, 8px);
+      padding: 0.75rem;
+      right: 1rem;
+      top: 4.25rem;
+      min-width: 13rem;
+      border: 1px solid var(--surface-border);
+
+      .layout-topbar-menu-content {
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .layout-topbar-action {
+        display: flex;
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+        border-radius: var(--content-border-radius, 6px);
+        padding: 0.5rem 0.75rem;
+
+        i {
+          font-size: 1rem;
+          margin-right: 0.75rem;
+        }
+
+        span {
+          font-weight: 500;
+          display: block;
+        }
+      }
+    }
+  }
+}
