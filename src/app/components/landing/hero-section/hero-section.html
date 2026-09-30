@@ -1,0 +1,63 @@
+<section class="pt-4 min-h-[70vh] flex justify-around flex-col" aria-labelledby="hero-heading">
+  <div class="max-w-4xl">
+    <h1
+      id="hero-heading"
+      class="mt-4 text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.12] text-surface-900 dark:text-surface-0"
+    >
+      Kelola cuti &amp; gaji
+      <em class="not-italic text-primary-500 dark:text-primary-400">tanpa spreadsheet.</em>
+    </h1>
+
+    <p
+      class="mt-4 text-base sm:text-lg leading-relaxed text-surface-500 dark:text-surface-400 max-w-lg"
+    >
+      Hitung hari kerja aktif, potong gaji otomatis, validasi dokumen — semua dalam satu halaman
+      interaktif.
+    </p>
+
+    <nav class="flex flex-wrap gap-3 mt-7" aria-label="Navigasi cepat">
+      <a href="#cuti-simulator">
+        <p-button label="Coba Simulasi Cuti" [rounded]="true">
+          <ng-icon name="lucideCalendarPlus" size="1.1rem" class="mr-2" aria-hidden="true" />
+        </p-button>
+      </a>
+      <a href="#kalkulator-gaji">
+        <p-button label="Hitung Gaji" [rounded]="true" severity="secondary" [outlined]="true">
+          <ng-icon name="lucideCoins" size="1.1rem" class="mr-2" aria-hidden="true" />
+        </p-button>
+      </a>
+    </nav>
+  </div>
+
+  <dl
+    class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12 pt-8 border-t border-surface-200 dark:border-surface-800"
+  >
+    <div>
+      <dt class="flex items-center gap-1.5 text-sm font-bold text-surface-900 dark:text-surface-0">
+        <ng-icon name="lucideCalendarCheck" size="1.1rem" aria-hidden="true" />
+        Sabtu &amp; Minggu?
+      </dt>
+      <dd class="mt-1 text-xs leading-relaxed text-surface-500 dark:text-surface-400">
+        Otomatis dilewati. Potongan cuma hari kerja.
+      </dd>
+    </div>
+    <div>
+      <dt class="flex items-center gap-1.5 text-sm font-bold text-surface-900 dark:text-surface-0">
+        <ng-icon name="lucideFileCheck2" size="1.1rem" aria-hidden="true" />
+        Cuti &gt; 3 hari?
+      </dt>
+      <dd class="mt-1 text-xs leading-relaxed text-surface-500 dark:text-surface-400">
+        Sistem minta surat pernyataan — baru bisa submit.
+      </dd>
+    </div>
+    <div>
+      <dt class="flex items-center gap-1.5 text-sm font-bold text-surface-900 dark:text-surface-0">
+        <ng-icon name="lucideCoins" size="1.1rem" aria-hidden="true" />
+        Rp 227.272 / hari
+      </dt>
+      <dd class="mt-1 text-xs leading-relaxed text-surface-500 dark:text-surface-400">
+        Tarif harian tetap. Rekap langsung diitung.
+      </dd>
+    </div>
+  </dl>
+</section>

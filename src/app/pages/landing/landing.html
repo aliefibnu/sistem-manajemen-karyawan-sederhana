@@ -1,21 +1,43 @@
-<div class="max-w-7xl mx-auto p-6 flex flex-col gap-6">
-  <div
-    class="rounded-2xl border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-8 shadow-sm"
-  >
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h1
-          class="text-2xl md:text-3xl font-bold tracking-tight text-surface-900 dark:text-surface-0"
-        >
-          Sistem Manajemen Karyawan
-        </h1>
-        <p class="mt-1 text-surface-500 dark:text-surface-400">
-          Selamat datang di portal manajemen karyawan terpadu.
-        </p>
-      </div>
-      <div class="flex items-center gap-3">
-        <p-button label="Kelola Karyawan" icon="pi pi-users" />
-      </div>
-    </div>
-  </div>
+<p-toast />
+<div class="max-w-352 mx-auto px-5 pt-8 pb-16 flex flex-col gap-16">
+  <app-hero-section />
+
+  <app-cuti-section
+    [startDate]="startDate()"
+    [endDate]="endDate()"
+    [minEndDate]="minEndDate()"
+    [isDateRangeInvalid]="isDateRangeInvalid()"
+    [reason]="reason()"
+    [isFileUploaded]="isFileUploaded()"
+    [submissionMessage]="submissionMessage()"
+    [leaveCalculation]="leaveCalculation()"
+    [leaveBreakdownItems]="leaveBreakdownItems()"
+    (startDateChange)="onStartDateChange($event)"
+    (endDateChange)="onEndDateChange($event)"
+    (reasonChange)="reason.set($event)"
+    (fileSelect)="onFileSelect()"
+    (submitSimulation)="onSimulateCutiSubmit()"
+  />
+
+  <app-gaji-section
+    [monthlyWorkDays]="monthlyWorkDays()"
+    [dailySalaryRate]="dailySalaryRate()"
+    [approvedLeaveDays]="approvedLeaveDays()"
+    [adjustmentType]="adjustmentType()"
+    [adjustmentValue]="adjustmentValue()"
+    [adjustmentOptions]="adjustmentOptions"
+    [salaryBreakdownRows]="salaryBreakdownRows()"
+    [salaryNetTotal]="salaryNetTotal()"
+    (monthlyWorkDaysChange)="monthlyWorkDays.set($event)"
+    (dailySalaryRateChange)="dailySalaryRate.set($event)"
+    (approvedLeaveDaysChange)="approvedLeaveDays.set($event)"
+    (adjustmentTypeChange)="adjustmentType.set($event)"
+    (adjustmentValueChange)="adjustmentValue.set($event)"
+  />
+
+  <app-rules-section />
+
+  <app-roles-section />
+
+  <app-footer-section />
 </div>

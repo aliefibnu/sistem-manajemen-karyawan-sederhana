@@ -1,0 +1,179 @@
+<section
+  id="cuti-simulator"
+  class="scroll-mt-20 p-6 sm:p-10 rounded-2xl border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900"
+  aria-labelledby="cuti-heading"
+>
+  <header class="flex items-start gap-4 mb-8">
+    <span
+      class="text-4xl font-black leading-none text-primary-500/20 select-none"
+      aria-hidden="true"
+      >01</span
+    >
+    <div>
+      <h2
+        id="cuti-heading"
+        class="text-2xl font-extrabold tracking-tight text-surface-900 dark:text-surface-0"
+      >
+        Pengajuan Cuti
+      </h2>
+      <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">
+        Pilih tanggal, tulis alasan — sistem yang ngitung sisanya.
+      </p>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+    <p-fluid class="flex flex-col gap-4">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex flex-col gap-2 w-full">
+          <label
+            for="start-date-input"
+            class="text-sm font-semibold text-surface-900 dark:text-surface-0"
+            >Mulai Cuti</label
+          >
+          <p-datepicker
+            inputId="start-date-input"
+            [showIcon]="true"
+            [showButtonBar]="true"
+            dateFormat="yy-mm-dd"
+            dataType="string"
+            [ngModel]="startDate()"
+            (ngModelChange)="startDateChange.emit($event)"
+            placeholder="YYYY-MM-DD"
+            class="w-full"
+          />
+        </div>
+        <div class="flex flex-col gap-2 w-full">
+          <label
+            for="end-date-input"
+            class="text-sm font-semibold text-surface-900 dark:text-surface-0"
+            >Selesai Cuti</label
+          >
+          <p-datepicker
+            inputId="end-date-input"
+            [showIcon]="true"
+            [showButtonBar]="true"
+            dateFormat="yy-mm-dd"
+            dataType="string"
+            [minDate]="minEndDate()"
+            [ngModel]="endDate()"
+            (ngModelChange)="endDateChange.emit($event)"
+            placeholder="YYYY-MM-DD"
+            class="w-full"
+          />
+        </div>
+      </div>
+
+      @if (isDateRangeInvalid()) {
+        <p-message severity="error" size="small" styleClass="w-full" role="alert">
+          Tanggal selesai cuti tidak boleh lebih awal dari tanggal mulai cuti.
+        </p-message>
+      }
+
+      <div class="flex flex-col gap-2">
+        <label for="reason-input" class="text-sm font-semibold text-surface-900 dark:text-surface-0"
+          >Alasan Cuti</label
+        >
+        <textarea
+          pTextarea
+          id="reason-input"
+          rows="3"
+          [autoResize]="true"
+          [ngModel]="reason()"
+          (ngModelChange)="reasonChange.emit($event)"
+          placeholder="Kenapa mau cuti?"
+          class="w-full"
+        ></textarea>
+      </div>
+
+      @if (leaveCalculation().isDocRequired) {
+        <p-message severity="warn" size="small" styleClass="w-full">
+          <div
+            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 w-full"
+          >
+            <div>
+              <strong>{{ leaveCalculation().activeWorkDays }} hari kerja</strong> — wajib
+              melampirkan surat pernyataan.
+            </div>
+            @if (isFileUploaded()) {
+              <p-tag severity="success" value="Terlampir ✓" [rounded]="true" />
+            }
+          </div>
+        </p-message>
+      } @else {
+        <p-message severity="success" size="small" styleClass="w-full">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-check-circle"></i>
+            <span>≤ 3 hari kerja — tidak perlu dokumen tambahan.</span>
+          </div>
+        </p-message>
+      }
+
+      <div class="flex gap-5">
+        @if (leaveCalculation().isDocRequired) {
+          <p-button
+            icon="pi pi-upload"
+            (onClick)="fileSelect.emit()"
+            [severity]="isFileUploaded() ? 'help' : 'danger'"
+            [label]="isFileUploaded() ? 'Ganti Surat' : 'Unggah Surat'"
+          ></p-button>
+        }
+        <p-button
+          label="Kirim Pengajuan"
+          (onClick)="submitSimulation.emit()"
+          class="grow"
+          [disabled]="isDateRangeInvalid() || leaveCalculation().activeWorkDays <= 0"
+        >
+          <ng-icon name="lucideArrowRight" size="1.1rem" class="mr-2" aria-hidden="true" />
+        </p-button>
+      </div>
+    </p-fluid>
+
+    <p-card
+      class="w-full block"
+      styleClass="border border-surface-200 dark:border-surface-800 shadow-none"
+    >
+      <ng-template #title>
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2 font-bold text-surface-900 dark:text-surface-0">
+            <i class="pi pi-calculator text-primary text-xl"></i>
+            <span>Kalkulasi Otomatis</span>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template #content>
+        <p-table [value]="leaveBreakdownItems()" [tableStyle]="{ 'min-width': '100%' }">
+          <ng-template #header>
+            <tr>
+              <th scope="col" class="font-semibold text-muted-color">Rincian</th>
+              <th scope="col" class="font-semibold text-muted-color text-right">Nilai</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-item>
+            <tr>
+              <td class="font-medium text-surface-700 dark:text-surface-200">
+                {{ item.label }}
+              </td>
+              <td class="font-mono font-bold text-right" [class]="item.colorClass">
+                {{ item.value }}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <div
+          class="flex justify-between items-center p-3 rounded-border bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-bold my-3"
+        >
+          <span class="flex items-center gap-1.5">
+            <i class="pi pi-minus-circle"></i>
+            Estimasi Potongan
+          </span>
+          <span class="font-mono text-base"
+            >−Rp {{ leaveCalculation().estimatedDeduction | number: '1.0-0' }}</span
+          >
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+</section>

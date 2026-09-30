@@ -1,0 +1,197 @@
+<section
+  id="kalkulator-gaji"
+  class="scroll-mt-20 p-6 sm:p-10 rounded-2xl border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900"
+  aria-labelledby="gaji-heading"
+>
+  <header class="flex items-start gap-4 mb-8">
+    <span
+      class="text-4xl font-black leading-none text-primary-500/20 select-none"
+      aria-hidden="true"
+      >02</span
+    >
+    <div>
+      <h2
+        id="gaji-heading"
+        class="text-2xl font-extrabold tracking-tight text-surface-900 dark:text-surface-0"
+      >
+        Rekap Gaji
+      </h2>
+      <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">
+        Atur parameter, lihat slip langsung berubah.
+      </p>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+    <p-fluid class="flex flex-col gap-4">
+      <div
+        class="flex items-center gap-2 font-semibold text-lg text-surface-900 dark:text-surface-0"
+      >
+        <i class="pi pi-sliders-h text-primary"></i>
+        <span>Parameter Penggajian</span>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex flex-col gap-2 w-full">
+          <label
+            for="work-days-input"
+            class="text-sm font-semibold text-surface-900 dark:text-surface-0"
+            >Hari kerja / bulan</label
+          >
+          <p-inputnumber
+            inputId="work-days-input"
+            [ngModel]="monthlyWorkDays()"
+            (ngModelChange)="monthlyWorkDaysChange.emit($event ?? 0)"
+            [min]="1"
+            [max]="31"
+            [showButtons]="true"
+            placeholder="Hari kerja"
+          />
+        </div>
+        <div class="flex flex-col gap-2 w-full">
+          <label
+            for="daily-rate-input"
+            class="text-sm font-semibold text-surface-900 dark:text-surface-0"
+            >Tarif harian (Rp)</label
+          >
+          <p-inputnumber
+            inputId="daily-rate-input"
+            [ngModel]="dailySalaryRate()"
+            (ngModelChange)="dailySalaryRateChange.emit($event ?? 0)"
+            [min]="0"
+            [step]="1000"
+            mode="decimal"
+            prefix="Rp "
+            placeholder="Tarif harian"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label
+          for="leave-days-input"
+          class="text-sm font-semibold text-surface-900 dark:text-surface-0"
+          >Cuti disetujui HRD</label
+        >
+        <p-inputnumber
+          inputId="leave-days-input"
+          [ngModel]="approvedLeaveDays()"
+          (ngModelChange)="approvedLeaveDaysChange.emit($event ?? 0)"
+          [min]="0"
+          [max]="31"
+          [showButtons]="true"
+          placeholder="Hari cuti"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label
+          for="adj-type-select"
+          class="text-sm font-semibold text-surface-900 dark:text-surface-0"
+          >Penyesuaian</label
+        >
+        <p-select
+          inputId="adj-type-select"
+          [options]="adjustmentOptions()"
+          [ngModel]="adjustmentType()"
+          (ngModelChange)="adjustmentTypeChange.emit($event)"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Pilih Penyesuaian"
+          styleClass="w-full"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label
+          for="adj-value-input"
+          class="text-sm font-semibold text-surface-900 dark:text-surface-0"
+        >
+          Nilai ({{ adjustmentType().includes('percent') ? '%' : 'Rp' }})
+        </label>
+        <p-inputnumber
+          inputId="adj-value-input"
+          [ngModel]="adjustmentValue()"
+          (ngModelChange)="adjustmentValueChange.emit($event ?? 0)"
+          mode="decimal"
+          [prefix]="adjustmentType().includes('percent') ? '' : 'Rp '"
+          [suffix]="adjustmentType().includes('percent') ? ' %' : ''"
+          [min]="0"
+          placeholder="Nilai penyesuaian"
+        />
+      </div>
+    </p-fluid>
+
+    <p-card
+      class="w-full block"
+      styleClass="border border-surface-200 dark:border-surface-800 shadow-none"
+    >
+      <ng-template #title>
+        <div class="flex justify-between items-start gap-2">
+          <div>
+            <div
+              class="text-base font-black tracking-widest text-primary-600 dark:text-primary-400"
+            >
+              SMKS
+            </div>
+            <div
+              class="text-[10px] font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400"
+            >
+              Slip Gaji Karyawan
+            </div>
+          </div>
+          <p-tag value="PREVIEW" severity="secondary" [rounded]="true" />
+        </div>
+      </ng-template>
+
+      <ng-template #subtitle>
+        <span class="text-xs text-muted-color">Rincian estimasi penghasilan bulan berjalan</span>
+      </ng-template>
+
+      <ng-template #content>
+        <p-table [value]="salaryBreakdownRows()" [tableStyle]="{ 'min-width': '100%' }">
+          <ng-template #header>
+            <tr>
+              <th scope="col" class="text-xs font-semibold text-muted-color">Komponen</th>
+              <th scope="col" class="text-xs font-semibold text-muted-color">Keterangan</th>
+              <th scope="col" class="text-xs font-semibold text-muted-color text-right">Nominal</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-row>
+            <tr>
+              <td class="text-xs font-semibold text-surface-900 dark:text-surface-0">
+                {{ row.component }}
+              </td>
+              <td class="text-xs text-muted-color">{{ row.description }}</td>
+              <td
+                class="text-xs font-mono font-bold text-right whitespace-nowrap"
+                [class]="row.colorClass"
+              >
+                {{ row.amountText }}
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template #footer>
+            <tr class="border-t-2 border-primary">
+              <td colspan="2" class="font-extrabold text-sm text-surface-900 dark:text-surface-0">
+                Take Home Pay
+              </td>
+              <td class="text-right font-mono font-black text-lg text-primary">
+                Rp {{ salaryNetTotal() | number: '1.0-0' }}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <p-divider />
+
+        <p-message severity="secondary" size="small" styleClass="w-full">
+          <div class="flex items-center gap-1.5 text-xs text-muted-color">
+            <i class="pi pi-lock"></i>
+            <span>Karyawan hanya dapat melihat slip gaji milik sendiri secara aman.</span>
+          </div>
+        </p-message>
+      </ng-template>
+    </p-card>
+  </div>
+</section>
